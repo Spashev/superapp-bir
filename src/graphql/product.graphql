@@ -1,0 +1,19 @@
+extend type Query {
+    products: [Product!] @guard(with: ["sanctum"]) @paginate(defaultCount: 10, maxCount: 100)
+    product(id: ID!, @eq): Product @guard(with: ["sanctum"]) @find
+}
+
+type Product {
+    name: String!
+    rating: String!
+    rooms_qty: Int!
+    swimming_pool: Boolean!
+    trestle_bed: Boolean!
+    sauna: Boolean!
+    address: String!
+    price_per_night: Int!
+    price_per_week: Int
+    price_per_month: Int
+    owner: [Manager] @belongsTo(relation:"owner")
+    created_at: String!
+}

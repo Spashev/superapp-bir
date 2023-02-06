@@ -1,0 +1,73 @@
+version: "1.0"
+
+# http://localhost:15672/  - rabbitmq
+# http://localhost:8081/  - adminer
+# http://localhost:8025/  - mailhog
+
+services:
+
+  mysql:
+    image: mariadb:latest
+    restart: always
+    command: mysqld --sql_mode=""
+    env_file:
+      - env/mysql.env
+    ports:
+      - "3306:3306"
+
+  backend:
+    image: backend
+    container_name: backend
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        BUILD_WITH_XDEBUG: 1
+    environment:
+      PHP_ENABLE_XDEBUG: 1
+      PHP_IDE_CONFIG: "serverName=localhost:80"
+    ports:
+      - "80:80"
+      - "443:43"
+    depends_on:
+      - mysql
+    volumes:
+      - ./src:/usr/share/nginx/html/project
+    extra_hosts:
+      - br.test:127.0.0.1
+      - host.docker.internal:host-gateway
+
+  adminer:
+    image: adminer:4.6.2
+    restart: always
+    ports:
+      - "8081:8080"
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  memcached:
+    image: memcached:alpine
+    container_name: memcached
+    restart: always
+    ports:
+      - "11211:11211"
+
+  rabbit:
+    image: rabbitmq:management-alpine
+    container_name: rabbit
+    restart: always
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+  mailhog:
+    image: teawithfruit/mailhog
+    container_name: mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"

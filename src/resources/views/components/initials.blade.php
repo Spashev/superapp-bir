@@ -1,0 +1,3 @@
+<div>
+    {{$initial}}
+</div>

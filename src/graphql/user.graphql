@@ -1,0 +1,48 @@
+type Query {
+    managers: [Manager!] @paginate(defaultCount: 10, maxCount: 100)
+    users: [User!] @paginate(defaultCount: 10, maxCount: 100)
+}
+
+type Mutation {
+    createUser(input: UserCreateInput! @spread): User! @guard(with: ["sanctum"]) @create
+    updateUser(input: UserUpdateInput! @spread): User! @guard(with: ["sanctum"]) @update
+    deleteUser(id: ID!): User @guard(with: ["sanctum"]) @delete
+}
+
+input UserCreateInput {
+    first_name: String!
+    second_name: String!
+    middle_name: String
+    email: String!
+    phone: String
+    address: String
+    password: String!
+}
+
+input UserUpdateInput {
+    id: ID!, first_name: String
+    second_name: String
+    middle_name: String
+    email: String
+    phone: String
+    address: String
+}
+
+type User {
+    id: ID!
+    first_name: String!
+    second_name: String
+    middle_name: String
+    email: String!
+    phone: String
+    address: String
+    created_at: String!
+}
+
+type Manager {
+    full_name: String!
+    email: String!
+    phone: String
+    iin: String
+    created_at: String!
+}
